@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 """
-This module converts VCF 2.01 (supporse from Android phone) to Outlook 2003 CSV
+This package converts VCF 2.01 (supporse from Android phone) to Outlook 2003 CSV
 
 .. note::
     At the moment, extracted only formatted name and phone numbers.
@@ -24,7 +24,28 @@ from operator import itemgetter
 # Metadata
 #------------------------------------------------------------------------------
 
-__version__ = '0.1.0.0a'
+__version__ = '0.1.0.1a'
+
+#------------------------------------------------------------------------------
+# Constants 
+#------------------------------------------------------------------------------
+
+CSV_FILE_HEADERS = (
+    "Title","First Name","Middle Name","Last Name","Suffix",
+    "Given Name Yomi","Family Name Yomi","Home Street","Home City",
+    "Home State","Home Postal Code","Home Country","Company","Department",
+    "Job Title","Office Location","Business Street","Business City",
+    "Business State","Business Postal Code","Business Country",
+    "Other Street","Other City","Other State","Other Postal Code",
+    "Other Country","Assistant's Phone","Business Fax","Business Phone",
+    "Business Phone 2","Callback","Car Phone","Company Main Phone",
+    "Home Fax","Home Phone","Home Phone 2","ISDN","Mobile Phone",
+    "Other Fax","Other Phone","Pager","Primary Phone","Radio Phone",
+    "TTY/TDD Phone","Telex","Anniversary","Birthday",
+    "E-mail Address","E-mail Type","E-mail 2 Address",
+    "E-mail 2 Type","E-mail 3 Address","E-mail 3 Type","Notes",
+    "Spouse","Web Page"
+)
 
 #------------------------------------------------------------------------------
 # Convertor
@@ -62,6 +83,7 @@ class CsvCollection:
     def to_file(self, file_path):
         with open(file_path, 'w') as csv_file:
             csv_writer = csv.writer(csv_file)
+            csv_writer.writerow(CSV_FILE_HEADERS)
             for item in self.__items:
                 csv_writer.writerow(item.as_tuple())
 
@@ -77,24 +99,8 @@ class CsvStructure:
     This class implements fields structure of Outlook CSV file.
     """
 
-    __slots__ = ['__fields', '__quote_printed']
-
     #: Fields available in Outlook 2003 CSV file.
-    __ordered_keys = (
-        "Title","First Name","Middle Name","Last Name","Suffix",
-        "Given Name Yomi","Family Name Yomi","Home Street","Home City",
-        "Home State","Home Postal Code","Home Country","Company","Department",
-        "Job Title","Office Location","Business Street","Business City",
-        "Business State","Business Postal Code","Business Country",
-        "Other Street","Other City","Other State","Other Postal Code",
-        "Other Country","Assistant's Phone","Business Fax","Business Phone",
-        "Business Phone 2","Callback","Car Phone","Company Main Phone",
-        "Home Fax","Home Phone","Home Phone 2","ISDN","Mobile Phone",
-        "Other Fax","Other Phone","Pager","Primary Phone","Radio Phone",
-        "TTY/TDD Phone","Telex","Anniversary","Birthday","E-mail Address",
-        "E-mail Type","E-mail 2 Address","E-mail 2 Type","E-mail 3 Address",
-        "E-mail 3 Type","Notes","Spouse","Web Page"
-    )
+    __ordered_keys = CSV_FILE_HEADERS
 
     #: Existed phone fields in CSV structure.
     __phone_cells = (
@@ -224,3 +230,7 @@ def main():
         vcf_to_csv(*args, quote_printed=options.quote_printed)
     else:
         os.exit('vcf2csv vcf_file [csv_output_file][--quote-printed]')
+
+
+if __name__ == '__main__':
+    main()
